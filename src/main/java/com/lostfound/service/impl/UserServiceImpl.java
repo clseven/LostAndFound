@@ -3,11 +3,15 @@ package com.lostfound.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.lostfound.common.exception.BaseException;
 import com.lostfound.common.properties.WeChatProperties;
 import com.lostfound.common.utils.HttpClientUtil;
 import com.lostfound.domain.dto.UserLoginDTO;
+import com.lostfound.domain.dto.UserUpdateDTO;
 import com.lostfound.domain.po.User;
 import com.lostfound.common.exception.LoginFailedException;
+import com.lostfound.domain.vo.UserUpdateVO;
 import com.lostfound.mapper.UserMapper;
 import com.lostfound.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +72,42 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         return user;
+    }
+
+    @Override
+    public UserUpdateVO updateUserInfo(UserUpdateDTO userUpdateDTO) {
+        User user = this.getById(userUpdateDTO.getId()); // 用id查询
+        if (user == null) {
+            throw new BaseException("用户不存在");
+        }
+
+        if (StringUtils.isNotBlank(userUpdateDTO.getName())) {
+            user.setName(userUpdateDTO.getName());
+        }
+        if (StringUtils.isNotBlank(userUpdateDTO.getPhone())) {
+            user.setPhone(userUpdateDTO.getPhone());
+        }
+        if (StringUtils.isNotBlank(userUpdateDTO.getSex())) {
+            if (!"0".equals(userUpdateDTO.getSex()) && !"1".equals(userUpdateDTO.getSex())) {
+                throw new BaseException("性别只能是0（女）或1（男）");
+            }
+            user.setSex(userUpdateDTO.getSex());
+        }
+        if (StringUtils.isNotBlank(userUpdateDTO.getAvatar())) {
+            user.setAvatar(userUpdateDTO.getAvatar());
+        }
+
+        // 4. 保存修改
+        userMapper.updateById(user);
+
+        // 5. 转换为VO返回
+        return UserUpdateVO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .phone(user.getPhone())
+                .sex(user.getSex())
+                .avatar(user.getAvatar())
+                .build();
     }
 
     private String getOpenid(String code) {

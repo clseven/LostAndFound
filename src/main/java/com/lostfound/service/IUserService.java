@@ -1,8 +1,10 @@
 package com.lostfound.service;
 
 import com.lostfound.domain.dto.UserLoginDTO;
+import com.lostfound.domain.dto.UserUpdateDTO;
 import com.lostfound.domain.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lostfound.domain.vo.UserUpdateVO;
 
 /**
  * <p>
@@ -15,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IUserService extends IService<User> {
 
     User wxlogin(UserLoginDTO userLoginDTO);
+
+    UserUpdateVO updateUserInfo(UserUpdateDTO userUpdateDTO);
 }

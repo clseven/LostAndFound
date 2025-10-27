@@ -3,11 +3,15 @@ package com.lostfound.handler;
 import com.lostfound.common.result.Result;
 import com.lostfound.common.exception.BaseException;
 import com.lostfound.common.exception.LoginFailedException;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
@@ -23,6 +27,17 @@ public class GlobalExceptionHandler {
         log.error("异常信息：{}", ex.getMessage());
         return Result.error(ex.getMessage());
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        String errorMsg = ex.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+
+        log.error("参数校验失败: {}", errorMsg);
+        return Result.error(errorMsg); // 直接返回错误，阻止后续执行
+    }
+
 
     /**
      * 处理登录失败异常

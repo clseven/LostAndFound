@@ -5,13 +5,16 @@ import com.lostfound.common.properties.JwtProperties;
 import com.lostfound.common.result.Result;
 import com.lostfound.common.utils.JwtUtil;
 import com.lostfound.domain.dto.UserLoginDTO;
+import com.lostfound.domain.dto.UserUpdateDTO;
 import com.lostfound.domain.po.User;
 import com.lostfound.domain.vo.UserLoginVO;
+import com.lostfound.domain.vo.UserUpdateVO;
 import com.lostfound.service.IUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -57,6 +60,14 @@ public class UserController {
 
         log.info("用户{}",userLoginVO);
         return Result.success(userLoginVO);
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("用户信息修改")
+    public Result<UserUpdateVO> updateUserInfo(@Validated @RequestBody UserUpdateDTO userUpdateDTO) {
+        log.info("用户信息修改：{}", userUpdateDTO);
+        UserUpdateVO userUpdateVO = userService.updateUserInfo(userUpdateDTO);
+        return Result.success(userUpdateVO);
     }
 
 }
