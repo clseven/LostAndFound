@@ -1,12 +1,14 @@
 package com.lostfound.controller;
 
 
+import com.lostfound.common.context.BaseContext;
 import com.lostfound.common.properties.JwtProperties;
 import com.lostfound.common.result.Result;
 import com.lostfound.common.utils.JwtUtil;
 import com.lostfound.domain.dto.UserLoginDTO;
 import com.lostfound.domain.dto.UserUpdateDTO;
 import com.lostfound.domain.po.User;
+import com.lostfound.domain.vo.UserInfoVO;
 import com.lostfound.domain.vo.UserLoginVO;
 import com.lostfound.domain.vo.UserUpdateVO;
 import com.lostfound.service.IUserService;
@@ -70,4 +72,17 @@ public class UserController {
         return Result.success(userUpdateVO);
     }
 
+    @GetMapping("/info")
+    @ApiOperation("查询当前登录用户信息")
+    public Result<UserInfoVO> getUserInfo(Long userId) {
+        log.info("用户信息查询，id:{}",userId);
+        //TODO:登录需前端接口,需要登录才能在当前线程获取id
+//        Long userId = BaseContext.getCurrentId();
+        // 查询用户信息
+        UserInfoVO userInfoVO = userService.getUserInfoById(userId);
+        if (userInfoVO == null) {
+            return Result.error("用户不存在");
+        }
+        return Result.success(userInfoVO);
+    }
 }

@@ -4,6 +4,7 @@ import com.lostfound.domain.dto.UserLoginDTO;
 import com.lostfound.domain.dto.UserUpdateDTO;
 import com.lostfound.domain.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lostfound.domain.vo.UserInfoVO;
 import com.lostfound.domain.vo.UserUpdateVO;
 
 /**
@@ -16,7 +17,12 @@ import com.lostfound.domain.vo.UserUpdateVO;
  */
 public interface IUserService extends IService<User> {
 
+    //微信登录
     User wxlogin(UserLoginDTO userLoginDTO);
 
+    //更新用户信息
     UserUpdateVO updateUserInfo(UserUpdateDTO userUpdateDTO);
+
+    //根据id查询用户信息
+    UserInfoVO getUserInfoById(Long userId);
 }

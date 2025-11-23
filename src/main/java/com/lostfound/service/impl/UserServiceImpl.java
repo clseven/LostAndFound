@@ -11,6 +11,7 @@ import com.lostfound.domain.dto.UserLoginDTO;
 import com.lostfound.domain.dto.UserUpdateDTO;
 import com.lostfound.domain.po.User;
 import com.lostfound.common.exception.LoginFailedException;
+import com.lostfound.domain.vo.UserInfoVO;
 import com.lostfound.domain.vo.UserUpdateVO;
 import com.lostfound.mapper.UserMapper;
 import com.lostfound.service.IUserService;
@@ -110,6 +111,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .build();
     }
 
+    @Override
+    public UserInfoVO getUserInfoById(Long userId) {
+        User user = this.getById(userId);
+        if(user==null){
+            throw new BaseException("用户不存在");
+        }
+
+        //返回用户信息
+        return UserInfoVO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .phone(user.getPhone())
+                .sex(user.getSex())
+                .avatar(user.getAvatar())
+                .createTime(user.getCreateTime())
+                .build();
+    }
+
+    //获取微信用户Openid
     private String getOpenid(String code) {
         Map<String,String> map=new HashMap<>();
         map.put("appid",weChatProperties.getAppid());

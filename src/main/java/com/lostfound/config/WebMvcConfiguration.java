@@ -26,9 +26,10 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     protected void addInterceptors(InterceptorRegistry registry) {
 
         registry.addInterceptor(jwtTokenUserInterceptor)
-//                .addPathPatterns("/user/**")
+//              TODO:.addPathPatterns("/user/**")
                 .excludePathPatterns("/user/**")
                 .excludePathPatterns("/user/wxlogin",
+                        "/favicon.ico",
                         "/doc.html", // 放行 Swagger UI 页面
                         "/webjars/**", // 放行 Swagger 静态资源
                         "/v3/api-docs/**", // Springdoc 接口文档（3.x）
